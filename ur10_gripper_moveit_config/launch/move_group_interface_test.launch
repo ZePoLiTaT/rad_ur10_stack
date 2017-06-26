@@ -1,0 +1,14 @@
+<launch>
+
+  <arg name="X" default="X"/>
+  <arg name="Y" default="X"/>
+  <arg name="Z" default="X" />
+  <arg name="Roll" default="" />
+  <arg name="Pitch" default="" />
+  <arg name="Yaw" default="" />
+
+  <node name="move_group_interface" pkg="ur10_gripper_moveit_config" type="move_group_interface_ur10" respawn="false" output="screen" args="$(arg X) $(arg Y) $(arg Z) $(arg Roll) $(arg Pitch) $(arg Yaw)">
+  </node>
+
+</launch>
+

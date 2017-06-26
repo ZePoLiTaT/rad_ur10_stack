@@ -1,0 +1,19 @@
+<package>
+
+  <name>ur10_gripper_msgs</name>
+  <version>0.0.0</version>
+  <description>ur10 msgs</description>
+  <author email="faizerdini@gmail.com">Faiz</author>
+  <maintainer email="faizerdini@gmail.com">Faiz</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  
+  <run_depend>message_runtime</run_depend>
+  <run_depend>std_msgs</run_depend>
+
+
+</package>
