@@ -328,7 +328,7 @@
     
     <link name="${prefix}gripperOffset"/>
     <joint name="${prefix}ee_link2GripperOffset" type="fixed">
-      <origin xyz="0.18 0 0" rpy="0 0 0"/>
+      <origin xyz="0.165 0 0" rpy="0 0 0"/>
       <parent link="${prefix}ee_link"/>
       <child link="${prefix}gripperOffset"/>
     </joint>

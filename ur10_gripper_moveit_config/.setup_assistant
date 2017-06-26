@@ -1,10 +1,10 @@
 moveit_setup_assistant_config:
   URDF:
-    package: ur10_c2gripper
+    package: ur10_gripper_description
     relative_path: urdf/ur10_gripper.urdf.xacro
   SRDF:
     relative_path: config/ur10.srdf
   CONFIG:
-    author_name: Faiz
-    author_email: Faizerdini@gmail.com
-    generated_timestamp: 1498053412
+    author_name: Faiz Mirza
+    author_email: s1635804@ed.ac.uk
+    generated_timestamp: 1498478084

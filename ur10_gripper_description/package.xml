@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>ur10_c2gripper</name>
+  <name>ur10_gripper_description</name>
   <version>0.0.0</version>
-  <description>The ur10_c2gripper package</description>
+  <description>The ur10_gripper_description package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

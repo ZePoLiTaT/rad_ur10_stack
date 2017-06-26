@@ -2,6 +2,6 @@
 <launch>
   <arg name="limited" default="false"/>
   
-  <param unless="$(arg limited)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find ur10_c2gripper)/urdf/ur10_gripper.urdf.xacro'" />
-  <param if="$(arg limited)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find ur10_c2gripper)/urdf/ur10_gripper.urdf.xacro'" /> 
+  <param unless="$(arg limited)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find ur10_gripper_description)/urdf/ur10_gripper.urdf.xacro'" />
+  <param if="$(arg limited)" name="robot_description" command="$(find xacro)/xacro --inorder '$(find ur10_gripper_description)/urdf/ur10_gripper.urdf.xacro'" /> 
 </launch>
