@@ -106,27 +106,89 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
           ur10_gripper_msgs::UR10::Response &res,
           moveit::planning_interface::MoveGroup &group)
 {
-    if(req.pose.size() < 7)
+    double leadDistance = 0.05;
+
+    if(req.pose.size() < 4)
     {
         ROS_ERROR("Invalid Request Parameters:");
-        ROS_ERROR("Provide X, Y, Z, R, P, Y of object in pose vector"); 
+        ROS_ERROR("Provide X, Y, Z of object in pose vector"); 
         ROS_ERROR("followed by direction D that it should be pushed in degrees");
         return false;
     }
     ROS_INFO("Push Request Recieved");
     ROS_INFO_STREAM("X: " << req.pose.at(0) << " Y: " << req.pose.at(1) 
-                << " Z: " << req.pose.at(2) << " R: " << req.pose.at(3)
-                << " P: " << req.pose.at(4) << " Y: " << req.pose.at(5));
-    ROS_INFO_STREAM("Push Angle = " << req.pose.at(6));
-    if(req.plan == true)
-    {
-        ROS_INFO("Planning Only Mode");
-    }
+                << " Z: " << req.pose.at(2));
+    ROS_INFO_STREAM("Push Angle = " << req.pose.at(3));
+    
     group.setPlanningTime(10.0);
+    group.setNumPlanningAttempts(3);
+    
+    //Set object as collision
 
-    //Not Implemented
+    //Move to Initial Pose
+    geometry_msgs::Pose goal1;
 
-    res.success = true;
+    goal1.position.x = req.pose[0] - leadDistance * cos(req.pose[3]);
+    goal1.position.y = req.pose[1] - leadDistance * sin(req.pose[3]);
+    goal1.position.z = req.pose[2] - 1.43;
+    setRPYGoal(goal1, 0.0, 0.0, req.pose[3]);
+
+    group.setPoseTarget(goal1);
+
+    moveit::planning_interface::MoveGroup::Plan my_plan;
+    ROS_INFO_STREAM("Planning motion to initial Pose");
+    res.success = group.plan(my_plan);
+    sleep(3.0);
+    if(res.success)
+    {
+        res.success = group.execute(my_plan);
+        ROS_INFO_STREAM("Moving to initial Pose");
+    }
+    sleep(7.0);
+
+    //Remove collision
+
+    //Move with constraint
+    /*
+    moveit_msgs::OrientationConstraint ocm;
+    ocm.link_name = group.getEndEffectorLink();
+    ocm.orientation = goal1.orientation;
+    ocm.absolute_x_axis_tolerance = 0.1;
+    ocm.absolute_y_axis_tolerance = 0.1;
+    ocm.absolute_z_axis_tolerance = 0.1;
+    ocm.weight = 1.0;
+
+    moveit_msgs::Constraints pushConstraint;
+    pushConstraint.orientation_constraints.push_back(ocm);
+    group.setPathConstraints(pushConstraint);
+    */
+
+    if(!res.success)
+    {
+        return true;
+    }
+    geometry_msgs::Pose goal2;
+
+    goal2.position.x = req.pose[0] + leadDistance * cos(req.pose[3]);
+    goal2.position.y = req.pose[1] + leadDistance * sin(req.pose[3]);
+    goal2.position.z = req.pose[2] - 1.43;
+    setRPYGoal(goal2, 0.0, 0.0, req.pose[3]);
+
+    group.setPoseTarget(goal2);
+
+    moveit::planning_interface::MoveGroup::Plan my_plan2;
+    ROS_INFO_STREAM("Planning push");
+    res.success = group.plan(my_plan2);
+    sleep(3.0);
+    if(res.success)
+    {
+        res.success = group.execute(my_plan2);
+        ROS_INFO_STREAM("Pushing");
+    }
+    sleep(5.0);
+
+    group.clearPathConstraints();
+
 
     return true;
 }
