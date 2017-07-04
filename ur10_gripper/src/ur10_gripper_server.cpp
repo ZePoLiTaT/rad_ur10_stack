@@ -82,7 +82,7 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
     ROS_INFO_STREAM("Planning motion");
     res.success = group.plan(my_plan);
     
-    sleep(3.0);
+    sleep(1.0);
     //Actually Move if not a planning only request
     if(res.success)
     {
@@ -92,11 +92,13 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
             res.success = group.execute(my_plan);
             sleep(5.0);
         }
+        /*
         else
         {
             plans.push_back(my_plan);
             std::cout << "Plan stored as plan #" << plans.size() - 1 << std::endl;
         }
+        */
     }
 
     return true;
@@ -108,17 +110,18 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
 {
     double leadDistance = 0.05;
 
-    if(req.pose.size() < 4)
+    if(req.pose.size() < 5)
     {
         ROS_ERROR("Invalid Request Parameters:");
         ROS_ERROR("Provide X, Y, Z of object in pose vector"); 
-        ROS_ERROR("followed by direction D that it should be pushed in degrees");
+        ROS_ERROR("followed by direction theta and distance d");
         return false;
     }
     ROS_INFO("Push Request Recieved");
     ROS_INFO_STREAM("X: " << req.pose.at(0) << " Y: " << req.pose.at(1) 
                 << " Z: " << req.pose.at(2));
     ROS_INFO_STREAM("Push Angle = " << req.pose.at(3));
+    ROS_INFO_STREAM("Push Distance = " << req.pose.at(3));
     
     group.setPlanningTime(10.0);
     group.setNumPlanningAttempts(3);
@@ -131,7 +134,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     goal1.position.x = req.pose[0] - leadDistance * cos(req.pose[3]);
     goal1.position.y = req.pose[1] - leadDistance * sin(req.pose[3]);
     goal1.position.z = req.pose[2] - 1.43;
-    setRPYGoal(goal1, 0.0, 0.0, req.pose[3]);
+    setRPYGoal(goal1, 3.14, 0.0, req.pose[3]);
 
     group.setPoseTarget(goal1);
 
@@ -169,10 +172,10 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     }
     geometry_msgs::Pose goal2;
 
-    goal2.position.x = req.pose[0] + leadDistance * cos(req.pose[3]);
-    goal2.position.y = req.pose[1] + leadDistance * sin(req.pose[3]);
+    goal2.position.x = req.pose[0] + req.pose[4] * cos(req.pose[3]);
+    goal2.position.y = req.pose[1] + req.pose[4] * sin(req.pose[3]);
     goal2.position.z = req.pose[2] - 1.43;
-    setRPYGoal(goal2, 0.0, 0.0, req.pose[3]);
+    setRPYGoal(goal2, 3.14, 0.0, req.pose[3]);
 
     group.setPoseTarget(goal2);
 
