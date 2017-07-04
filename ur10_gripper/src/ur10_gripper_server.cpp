@@ -109,6 +109,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
           moveit::planning_interface::MoveGroup &group)
 {
     double leadDistance = 0.05;
+    double tilt = 0.0;
 
     if(req.pose.size() < 5)
     {
@@ -117,7 +118,16 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
         ROS_ERROR("followed by direction theta and distance d");
         return false;
     }
-    ROS_INFO("Push Request Recieved");
+    if(req.plan)
+    {
+        tilt = 0.785;
+        ROS_INFO("Tilted Push Request Recieved");
+
+    }
+    else
+    {
+        ROS_INFO("Push Request Recieved");
+    }
     ROS_INFO_STREAM("X: " << req.pose.at(0) << " Y: " << req.pose.at(1) 
                 << " Z: " << req.pose.at(2));
     ROS_INFO_STREAM("Push Angle = " << req.pose.at(3));
@@ -134,7 +144,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     goal1.position.x = req.pose[0] - leadDistance * cos(req.pose[3]);
     goal1.position.y = req.pose[1] - leadDistance * sin(req.pose[3]);
     goal1.position.z = req.pose[2] - 1.43;
-    setRPYGoal(goal1, 3.14, 0.0, req.pose[3]);
+    setRPYGoal(goal1, 3.14, tilt, req.pose[3]);
 
     group.setPoseTarget(goal1);
 
@@ -147,24 +157,9 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
         res.success = group.execute(my_plan);
         ROS_INFO_STREAM("Moving to initial Pose");
     }
-    sleep(7.0);
+    sleep(5.0);
 
     //Remove collision
-
-    //Move with constraint
-    /*
-    moveit_msgs::OrientationConstraint ocm;
-    ocm.link_name = group.getEndEffectorLink();
-    ocm.orientation = goal1.orientation;
-    ocm.absolute_x_axis_tolerance = 0.1;
-    ocm.absolute_y_axis_tolerance = 0.1;
-    ocm.absolute_z_axis_tolerance = 0.1;
-    ocm.weight = 1.0;
-
-    moveit_msgs::Constraints pushConstraint;
-    pushConstraint.orientation_constraints.push_back(ocm);
-    group.setPathConstraints(pushConstraint);
-    */
 
     if(!res.success)
     {
@@ -175,7 +170,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     goal2.position.x = req.pose[0] + req.pose[4] * cos(req.pose[3]);
     goal2.position.y = req.pose[1] + req.pose[4] * sin(req.pose[3]);
     goal2.position.z = req.pose[2] - 1.43;
-    setRPYGoal(goal2, 3.14, 0.0, req.pose[3]);
+    setRPYGoal(goal2, 3.14, tilt, req.pose[3]);
 
     group.setPoseTarget(goal2);
 

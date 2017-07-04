@@ -2,6 +2,7 @@
 uint8 MOVETO_REQUEST = 0
 uint8 PUSH_REQUEST = 1
 uint8 TIME_REQUEST = 2
+uint8 EXECUTE_REQUEST = 3
 
 std_msgs/Header header
 
@@ -10,5 +11,7 @@ uint8 request
 #IF THERE IS A SPACE BEFORE THE [] THIS WILL BREAK
 float32[] pose
 bool plan
+#Used to pick plan or execute for plan
+#Used to pick tilt or regular for push
 ---
 bool success
