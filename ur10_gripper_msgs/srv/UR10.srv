@@ -15,3 +15,5 @@ bool plan
 #Used to pick tilt or regular for push
 ---
 bool success
+uint8 code
+float32[] joints

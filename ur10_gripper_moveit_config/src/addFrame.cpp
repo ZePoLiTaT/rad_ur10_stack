@@ -82,7 +82,7 @@ std::vector<moveit_msgs::CollisionObject> defineFrame(moveit::planning_interface
   	
 	// A pose for the workspace
   	geometry_msgs::Pose workspace_pose;
-  	workspace_pose.position.z = -1.425;
+  	workspace_pose.position.z = -1.370;
   	
 	// Pillar Poses
   	geometry_msgs::Pose pillar1_pose;
@@ -106,19 +106,19 @@ std::vector<moveit_msgs::CollisionObject> defineFrame(moveit::planning_interface
     geometry_msgs::Pose wall1_pose;
     wall1_pose.position.x = 0;
     wall1_pose.position.y = 0.995;
-    wall1_pose.position.z = -1.3975;
+    wall1_pose.position.z = -1.3375;
     geometry_msgs::Pose wall2_pose;
     wall2_pose.position.x = 0;
     wall2_pose.position.y = -0.995;
-    wall2_pose.position.z = -1.3975;
+    wall2_pose.position.z = -1.3375;
     geometry_msgs::Pose wall3_pose;
     wall3_pose.position.x = 0.995;
     wall3_pose.position.y = 0;
-    wall3_pose.position.z = -1.3975;
+    wall3_pose.position.z = -1.3375;
     geometry_msgs::Pose wall4_pose;
     wall4_pose.position.x = -0.995;
     wall4_pose.position.y = 0;
-    wall4_pose.position.z = -1.3975;
+    wall4_pose.position.z = -1.3375;
 
 
     // Add pose and size and define add bit //

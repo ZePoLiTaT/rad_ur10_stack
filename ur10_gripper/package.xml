@@ -23,6 +23,8 @@
   <build_depend>ur10_gripper_msgs</build_depend>
   <build_depend>message_generation</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>rosbag</build_depend>
+  <build_depend>rospy</build_depend>
 
   <run_depend>pluginlib</run_depend>
   <run_depend>moveit_core</run_depend>
@@ -42,5 +44,7 @@
   <run_depend>ur10_gripper_msgs</run_depend>
   <run_depend>message_runtime</run_depend>
   <run_depend>std_msgs</run_depend>
+  <run_depend>rosbag</run_depend>
+  <run_depend>rospy</run_depend>
 
 </package>

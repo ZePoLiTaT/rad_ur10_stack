@@ -17,6 +17,8 @@ find_package(catkin REQUIRED
     geometric_shapes
     std_msgs
     message_generation
+    rosbag
+    rospy
 )
 
 find_package(Boost REQUIRED system filesystem date_time thread)
@@ -28,7 +30,9 @@ catkin_package(
     moveit_core
     moveit_ros_planning_interface
     message_runtime
+    rosbag
 )
+catkin_python_setup()
 
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
@@ -37,3 +41,18 @@ add_executable(ur10_gripper_server src/ur10_gripper_server.cpp)
 target_link_libraries(ur10_gripper_server ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS ur10_gripper_server DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(ur10_heatmap src/ur10_heatmap.cpp)
+target_link_libraries(ur10_heatmap ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS ur10_heatmap DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(ur10_point_joints src/ur10_point_joints.cpp)
+target_link_libraries(ur10_point_joints ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS ur10_point_joints DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(run_trials src/run_trials.cpp)
+target_link_libraries(run_trials ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS run_trials DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+add_executable(extractData src/extractData.cpp)
+target_link_libraries(extractData ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS extractData DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

@@ -73,7 +73,7 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
 
     goal.position.x = req.pose[0];
     goal.position.y = req.pose[1];
-    goal.position.z = req.pose[2] - 1.43;
+    goal.position.z = req.pose[2] - 1.41;
     setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
 
     group.setPoseTarget(goal);
@@ -92,13 +92,6 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
             res.success = group.execute(my_plan);
             sleep(5.0);
         }
-        /*
-        else
-        {
-            plans.push_back(my_plan);
-            std::cout << "Plan stored as plan #" << plans.size() - 1 << std::endl;
-        }
-        */
     }
 
     return true;
@@ -108,7 +101,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
           ur10_gripper_msgs::UR10::Response &res,
           moveit::planning_interface::MoveGroup &group)
 {
-    double leadDistance = 0.05;
+    double leadDistance = 0.1;
     double tilt = 0.0;
 
     if(req.pose.size() < 5)
@@ -131,7 +124,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     ROS_INFO_STREAM("X: " << req.pose.at(0) << " Y: " << req.pose.at(1) 
                 << " Z: " << req.pose.at(2));
     ROS_INFO_STREAM("Push Angle = " << req.pose.at(3));
-    ROS_INFO_STREAM("Push Distance = " << req.pose.at(3));
+    ROS_INFO_STREAM("Push Distance = " << req.pose.at(4));
     
     group.setPlanningTime(10.0);
     group.setNumPlanningAttempts(3);
@@ -143,7 +136,7 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
 
     goal1.position.x = req.pose[0] - leadDistance * cos(req.pose[3]);
     goal1.position.y = req.pose[1] - leadDistance * sin(req.pose[3]);
-    goal1.position.z = req.pose[2] - 1.43;
+    goal1.position.z = req.pose[2] - 1.41;
     setRPYGoal(goal1, 3.14, tilt, req.pose[3]);
 
     group.setPoseTarget(goal1);
@@ -151,25 +144,27 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
     moveit::planning_interface::MoveGroup::Plan my_plan;
     ROS_INFO_STREAM("Planning motion to initial Pose");
     res.success = group.plan(my_plan);
+    res.code = 0;
     sleep(3.0);
     if(res.success)
     {
         res.success = group.execute(my_plan);
         ROS_INFO_STREAM("Moving to initial Pose");
     }
+    else
+    {
+        res.code = 1;
+        return true;
+    }
     sleep(5.0);
 
     //Remove collision
 
-    if(!res.success)
-    {
-        return true;
-    }
     geometry_msgs::Pose goal2;
 
     goal2.position.x = req.pose[0] + req.pose[4] * cos(req.pose[3]);
     goal2.position.y = req.pose[1] + req.pose[4] * sin(req.pose[3]);
-    goal2.position.z = req.pose[2] - 1.43;
+    goal2.position.z = req.pose[2] - 1.41;
     setRPYGoal(goal2, 3.14, tilt, req.pose[3]);
 
     group.setPoseTarget(goal2);
@@ -183,11 +178,13 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
         res.success = group.execute(my_plan2);
         ROS_INFO_STREAM("Pushing");
     }
-    sleep(5.0);
+    else
+    {
+        res.code = 2;
+    }
+    sleep(2.0);
 
     group.clearPathConstraints();
-
-
     return true;
 }
 
@@ -198,7 +195,7 @@ void printStart(moveit::planning_interface::MoveGroup &group)
     std::cout << "Start Pose" << std::endl;
     std::cout << "X: " << group.getCurrentPose().pose.position.x
               << " Y: " << group.getCurrentPose().pose.position.y
-              << " Z: " << group.getCurrentPose().pose.position.z + 1.43 << std::endl;
+              << " Z: " << group.getCurrentPose().pose.position.z + 1.41 << std::endl;
 
 
     std::cout << "Qx: " << group.getCurrentPose().pose.orientation.x
@@ -215,12 +212,13 @@ void printStart(moveit::planning_interface::MoveGroup &group)
 }
 
 void printGoal(geometry_msgs::Pose goal, moveit::planning_interface::MoveGroup &group,
-                moveit::planning_interface::MoveGroup::Plan &plan)
+               moveit::planning_interface::MoveGroup::Plan &plan,
+               ur10_gripper_msgs::UR10::Response &res)
 {
     std::cout << "Goal Pose" << std::endl;
     std::cout << "X: " << goal.position.x
               << " Y: " << goal.position.y
-              << " Z: " << goal.position.z + 1.43 << std::endl;
+              << " Z: " << goal.position.z + 1.41 << std::endl;
 
 
     std::cout << "Qx: " << goal.orientation.x
@@ -232,6 +230,7 @@ void printGoal(geometry_msgs::Pose goal, moveit::planning_interface::MoveGroup &
     for (int i = 0; i < 6; ++i)
     {
         std::cout << group.getJoints().at(i) << ": " << joints.at(i) << std::endl;
+        res.joints.push_back(joints.at(i));
     }
     std::cout << std::endl;
     std::cout << "Time to Reach Goal State: "
@@ -260,7 +259,7 @@ bool timeDistance(ur10_gripper_msgs::UR10::Request  &req,
 
     goal.position.x = req.pose[0];
     goal.position.y = req.pose[1];
-    goal.position.z = req.pose[2] - 1.43;
+    goal.position.z = req.pose[2] - 1.38;
     setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
 
     group.setPoseTarget(goal);
@@ -268,15 +267,16 @@ bool timeDistance(ur10_gripper_msgs::UR10::Request  &req,
     moveit::planning_interface::MoveGroup::Plan my_plan;
     ROS_INFO_STREAM("Planning motion");
     res.success = group.plan(my_plan);
+    if(res.success)
+    {
+        plans.push_back(my_plan);
 
-    plans.push_back(my_plan);
+        printStart(group);
+        printGoal(goal, group, my_plan, res);
 
-    printStart(group);
-    printGoal(goal, group, my_plan);
-
-    std::cout << "Plan stored as plan #" << plans.size()-1 << std::endl;
-
-    sleep(1.0);
+        std::cout << "Plan stored as plan #" << plans.size()-1 << std::endl;
+    }
+    sleep(2.0);
 
     return true;
 }
