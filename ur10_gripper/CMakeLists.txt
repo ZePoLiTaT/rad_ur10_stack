@@ -49,10 +49,3 @@ add_executable(ur10_point_joints src/ur10_point_joints.cpp)
 target_link_libraries(ur10_point_joints ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS ur10_point_joints DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-add_executable(run_trials src/run_trials.cpp)
-target_link_libraries(run_trials ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS run_trials DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
-add_executable(extractData src/extractData.cpp)
-target_link_libraries(extractData ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-install(TARGETS extractData DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
