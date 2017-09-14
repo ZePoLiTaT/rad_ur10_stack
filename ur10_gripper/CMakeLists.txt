@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(ur10_gripper)
 
 find_package(Eigen3 REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 
 # Eigen 3.2 (Wily) only provides EIGEN3_INCLUDE_DIR, not EIGEN3_INCLUDE_DIRS
 if(NOT EIGEN3_INCLUDE_DIRS)
@@ -19,6 +21,7 @@ find_package(catkin REQUIRED
     message_generation
     rosbag
     rospy
+    ur10_gripper_msgs
 )
 
 find_package(Boost REQUIRED system filesystem date_time thread)
@@ -32,7 +35,7 @@ catkin_package(
     message_runtime
     rosbag
 )
-catkin_python_setup()
+#catkin_python_setup()
 
 include_directories(${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
