@@ -12,7 +12,7 @@
   <param name="$(arg robot_description)_semantic" textfile="$(find ur10_gripper_moveit_config)/config/ur10.srdf" />
   
   <!-- Load updated joint limits (override information from URDF) -->
-  <group ns="$(arg robot_description)_planning">
+  <group ns="$(arg robot_description)_planning"> 
     <rosparam command="load" file="$(find ur10_gripper_moveit_config)/config/joint_limits.yaml"/>
   </group>
 

@@ -1,15 +1,26 @@
 Panels:
   - Class: rviz/Displays
-    Help Height: 84
+    Help Height: 0
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /MotionPlanning1
+        - /Global Options1
         - /MotionPlanning1/Scene Geometry1
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planned Path1
-      Splitter Ratio: 0.74256
-    Tree Height: 122
+        - /TF1
+        - /TF1/Frames1
+        - /TF1/Tree1/world1
+        - /TF1/Tree1/world1/base_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1/wrist_2_link1
+        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1/wrist_2_link1/wrist_3_link1
+        - /TF1/Tree1/world1/base_link1/base1
+      Splitter Ratio: 0.742560029
+    Tree Height: 199
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -26,7 +37,7 @@ Visualization Manager:
       Color: 160; 160; 164
       Enabled: true
       Line Style:
-        Line Width: 0.03
+        Line Width: 0.0299999993
         Value: Lines
       Name: Grid
       Normal Cell Count: 0
@@ -51,11 +62,11 @@ Visualization Manager:
         Center:
           X: 0
           Y: 0
-          Z: -0.7
+          Z: -0.69999999999999996
         Size:
           X: 2
           Y: 2
-          Z: 1.4
+          Z: 1.3999999999999999
       Name: MotionPlanning
       Planned Path:
         Color Enabled: false
@@ -85,6 +96,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          gripperOffset:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robotiq_85_adapter_link:
             Alpha: 1
             Show Axes: false
@@ -175,6 +190,7 @@ Visualization Manager:
         Show Robot Visual: true
         Show Trail: false
         State Display Time: 0.05 s
+        Trail Step Size: 1
         Trajectory Topic: move_group/display_planned_path
       Planning Metrics:
         Payload: 1
@@ -182,7 +198,7 @@ Visualization Manager:
         Show Manipulability: false
         Show Manipulability Index: false
         Show Weight Limit: false
-        TextHeight: 0.08
+        TextHeight: 0.0799999982
       Planning Request:
         Colliding Link Color: 255; 0; 0
         Goal State Alpha: 1
@@ -200,7 +216,7 @@ Visualization Manager:
       Scene Geometry:
         Scene Alpha: 1
         Scene Color: 50; 230; 50
-        Scene Display Time: 0.2
+        Scene Display Time: 0.200000003
         Show Scene Geometry: true
         Voxel Coloring: Z-Axis
         Voxel Rendering: Occupied Voxels
@@ -231,6 +247,10 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          gripperOffset:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
           robotiq_85_adapter_link:
             Alpha: 1
             Show Axes: false
@@ -318,6 +338,58 @@ Visualization Manager:
         Show Robot Collision: false
         Show Robot Visual: true
       Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        base:
+          Value: true
+        base_link:
+          Value: true
+        ee_link:
+          Value: true
+        forearm_link:
+          Value: true
+        shoulder_link:
+          Value: true
+        tool0:
+          Value: true
+        tool0_controller:
+          Value: true
+        upper_arm_link:
+          Value: true
+        world:
+          Value: true
+        wrist_1_link:
+          Value: true
+        wrist_2_link:
+          Value: true
+        wrist_3_link:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          base_link:
+            base:
+              tool0_controller:
+                {}
+            shoulder_link:
+              upper_arm_link:
+                forearm_link:
+                  wrist_1_link:
+                    wrist_2_link:
+                      wrist_3_link:
+                        ee_link:
+                          {}
+                        tool0:
+                          {}
+      Update Interval: 0
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -333,36 +405,41 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.71523
+      Distance: 7.71522999
       Enable Stereo Rendering:
-        Stereo Eye Separation: 0.06
+        Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.490899
-        Y: -0.440459
-        Z: -1.20895
+        X: -0.490898997
+        Y: -0.440459013
+        Z: -1.20895004
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.0500000007
+      Invert Z Axis: false
       Name: Current View
-      Near Clip Distance: 0.01
-      Pitch: -0.0297972
+      Near Clip Distance: 0.00999999978
+      Pitch: 0.270202816
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 1.47912
+      Yaw: 1.54411995
     Saved: ~
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 1148
+  Height: 1056
   Help:
     collapsed: false
   Hide Left Dock: false
   Hide Right Dock: false
-  Motion Planning:
+  MotionPlanning:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002e000000436fc0200000005fb000000100044006900730070006c00610079007301000000280000010f000000dd00fffffffb0000000800480065006c00700000000342000000bb0000007600fffffffb0000000a00560069006500770073010000013d000000b0000000b000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000001f30000026b000001cc00ffffff000000b90000043600000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  MotionPlanning - Slider:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000002e0000003dafc0200000007fb000000100044006900730070006c006100790073010000002800000108000000dd00fffffffb0000000800480065006c00700000000342000000bb0000007600fffffffb0000000a005600690065007700730100000136000000b5000000b000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000001f30000026b0000000000000000fb0000002e004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d00200053006c00690064006500720000000000ffffffff0000004a00fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001f100000211000001cc00ffffff00000459000003da00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
-  Width: 927
-  X: 55
-  Y: 14
+  Width: 1855
+  X: 65
+  Y: 24

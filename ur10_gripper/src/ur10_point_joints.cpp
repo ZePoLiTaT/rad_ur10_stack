@@ -50,12 +50,14 @@ int main(int argc, char **argv)
         {
             if(srv.response.success)
             {
+                std::cout <<  "SUCESS"<<std::endl;
                 std::cout << srv.response.joints[0] << " " << srv.response.joints[1] 
                           << " " << srv.response.joints[2] << " " << srv.response.joints[3] 
                           << " " << srv.response.joints[4] << " " << srv.response.joints[5] << std::endl;
             }
             else
             {
+                std::cout <<  "FAIL"<<std::endl;
                 std::cout <<  "X X X X X X" << std::endl; 
             }
         }
