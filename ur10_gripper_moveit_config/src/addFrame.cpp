@@ -9,6 +9,8 @@
 
 std::vector<moveit_msgs::CollisionObject> defineFrame(moveit::planning_interface::MoveGroup &group)
 {
+    int invert_z = -1;
+
     //Add the Collision Frame to the world
     moveit_msgs::CollisionObject ceiling;
   	moveit_msgs::CollisionObject pillar1;
@@ -44,81 +46,81 @@ std::vector<moveit_msgs::CollisionObject> defineFrame(moveit::planning_interface
     wall4.id = "Wall4";
   	workspace.id = "Workspace";
 
-  	// Define ceiling/floor size 
-  	shape_msgs::SolidPrimitive floors;
- 	floors.type = floors.BOX;
-  	floors.dimensions.resize(3);
-  	floors.dimensions[0] = 2.0;
-  	floors.dimensions[1] = 2.0;
-  	floors.dimensions[2] = 0.01;
+    // Define ceiling/floor size 
+    shape_msgs::SolidPrimitive floors;
+    floors.type = floors.BOX;
+    floors.dimensions.resize(3);
+    floors.dimensions[0] = 2.0;
+    floors.dimensions[1] = 2.0;
+    floors.dimensions[2] = 0.01;
 
-  	// Define pillar size
-  	shape_msgs::SolidPrimitive pillars;
- 	pillars.type = pillars.BOX;
-  	pillars.dimensions.resize(3);
-  	pillars.dimensions[0] = 0.04;
-  	pillars.dimensions[1] = 0.04;
-  	pillars.dimensions[2] = 1.43;
+    // Define pillar size
+    shape_msgs::SolidPrimitive pillars;
+    pillars.type = pillars.BOX;
+    pillars.dimensions.resize(3);
+    pillars.dimensions[0] = 0.04;
+    pillars.dimensions[1] = 0.04;
+    pillars.dimensions[2] = 1.43;
 
     // Define Top/Bottom Walls
-  	shape_msgs::SolidPrimitive wallUT;
- 	wallUT.type = wallUT.BOX;
-  	wallUT.dimensions.resize(3);
-  	wallUT.dimensions[0] = 2.0;
-  	wallUT.dimensions[1] = 0.01;
-  	wallUT.dimensions[2] = 0.055;
+    shape_msgs::SolidPrimitive wallUT;
+    wallUT.type = wallUT.BOX;
+    wallUT.dimensions.resize(3);
+    wallUT.dimensions[0] = 2.0;
+    wallUT.dimensions[1] = 0.01;
+    wallUT.dimensions[2] = 0.055;
 
     // Define Left/Right Walls
-  	shape_msgs::SolidPrimitive wallLR;
- 	wallLR.type = wallLR.BOX;
-  	wallLR.dimensions.resize(3);
-  	wallLR.dimensions[0] = 0.01;
-  	wallLR.dimensions[1] = 2.0;
-  	wallLR.dimensions[2] = 0.055;
+    shape_msgs::SolidPrimitive wallLR;
+    wallLR.type = wallLR.BOX;
+    wallLR.dimensions.resize(3);
+    wallLR.dimensions[0] = 0.01;
+    wallLR.dimensions[1] = 2.0;
+    wallLR.dimensions[2] = 0.055;
 
   	// A pose for the ceiling
   	geometry_msgs::Pose ceiling_pose;
-  	ceiling_pose.position.z = 0.01;
+  	ceiling_pose.position.z = 0.01 * invert_z;
   	
 	// A pose for the workspace
   	geometry_msgs::Pose workspace_pose;
-  	workspace_pose.position.z = -1.370;
+  	workspace_pose.position.z = -1.370 * invert_z;
   	
 	// Pillar Poses
   	geometry_msgs::Pose pillar1_pose;
   	pillar1_pose.position.x = 0.98;
   	pillar1_pose.position.y = 0.98;
-  	pillar1_pose.position.z = -0.7075;
+  	pillar1_pose.position.z = -0.7075 * invert_z;
   	geometry_msgs::Pose pillar2_pose;
   	pillar2_pose.position.x = -0.98;
   	pillar2_pose.position.y = 0.98;
-  	pillar2_pose.position.z = -0.7075;
+  	pillar2_pose.position.z = -0.7075 * invert_z;
   	geometry_msgs::Pose pillar3_pose;
   	pillar3_pose.position.x = 0.98;
   	pillar3_pose.position.y = -0.98;
-  	pillar3_pose.position.z = -0.7075;
+  	pillar3_pose.position.z = -0.7075 * invert_z;
   	geometry_msgs::Pose pillar4_pose;
   	pillar4_pose.position.x = -0.98;
   	pillar4_pose.position.y = -0.98;
-  	pillar4_pose.position.z = -0.7075;
+  	pillar4_pose.position.z = -0.7075 * invert_z;
 
     // Wall Poses
     geometry_msgs::Pose wall1_pose;
     wall1_pose.position.x = 0;
     wall1_pose.position.y = 0.995;
-    wall1_pose.position.z = -1.3375;
+    wall1_pose.position.z = -1.3375 * invert_z;
     geometry_msgs::Pose wall2_pose;
     wall2_pose.position.x = 0;
     wall2_pose.position.y = -0.995;
-    wall2_pose.position.z = -1.3375;
+    wall2_pose.position.z = -1.3375 * invert_z;
     geometry_msgs::Pose wall3_pose;
     wall3_pose.position.x = 0.995;
     wall3_pose.position.y = 0;
-    wall3_pose.position.z = -1.3375;
+    wall3_pose.position.z = -1.3375 * invert_z;
     geometry_msgs::Pose wall4_pose;
     wall4_pose.position.x = -0.995;
     wall4_pose.position.y = 0;
-    wall4_pose.position.z = -1.3375;
+    wall4_pose.position.z = -1.3375 * invert_z;
 
 
     // Add pose and size and define add bit //
@@ -179,7 +181,8 @@ int main(int argc, char **argv)
 
     //URDF defines 'Arm' as the planning group of the UR10
     //Gripper as the planning group of the Robotiq
-  	moveit::planning_interface::MoveGroup group("Arm");
+  	//moveit::planning_interface::MoveGroup group("Arm");
+    moveit::planning_interface::MoveGroup group("manipulator");
   	moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
     //Define Collision Objects

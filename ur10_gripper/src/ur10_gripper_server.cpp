@@ -1,3 +1,15 @@
+/**
+    UR10 Gripper Server
+    This server publishes a set of high level actions that the UR10 can perform
+
+    @author Faiz
+    @version 1.0 20/07/17
+
+    @modified Tatiana Lopez Guevara 
+    @version 1.1 29/09/17
+*/
+
+
 #include <moveit/move_group_interface/move_group.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 
@@ -18,6 +30,7 @@
 #define PUSH 1
 #define TIMEDISTANCE 2
 #define EXECUTE 3
+#define TILT 4
 
 std::vector<moveit::planning_interface::MoveGroup::Plan> plans;
 int numPlans = 0;
@@ -45,36 +58,55 @@ void setRPYGoal(geometry_msgs::Pose &goal, double roll, double pitch, double yaw
     goal.orientation.x = t0 * t3 * t4 - t1 * t2 * t5;
     goal.orientation.y = t0 * t2 * t5 + t1 * t3 * t4;
     goal.orientation.z = t1 * t2 * t4 - t0 * t3 * t5;
+
     return;
 }
+
 
 bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
             ur10_gripper_msgs::UR10::Response &res, 
             moveit::planning_interface::MoveGroup &group)
 {
-    if(req.pose.size() < 6)
+    if(req.pose.size() < 6 || req.pose.size() > 7)
     {
         ROS_ERROR("Invalid Request Parameters:");
-        ROS_ERROR("Provide X, Y, Z, R, P, Y in pose vector");
+        ROS_ERROR("Provide X, Y, Z, [R, P, Y | Rx, Ry, Rz, Rw] in pose vector");
         return false;
     }
     ROS_INFO("Move Request Recieved");
-    ROS_INFO_STREAM("X: " << req.pose.at(0) << " Y: " << req.pose.at(1) 
-                << " Z: " << req.pose.at(2) << " R: " << req.pose.at(3)
-                << " P: " << req.pose.at(4) << " Y: " << req.pose.at(5));
 
     if(req.plan == true)
     {
         ROS_INFO("Planning Only Mode");
     }
+
     group.setPlanningTime(10.0);
+    group.setMaxVelocityScalingFactor(0.03);
     //group.setGoalPositionTolerance(0.1);
     geometry_msgs::Pose goal;
 
     goal.position.x = req.pose[0];
     goal.position.y = req.pose[1];
-    goal.position.z = req.pose[2] - 1.41;
-    setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
+    goal.position.z = req.pose[2];
+
+    if(req.pose.size() == 6)
+    {
+        setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
+    }
+    else
+    {
+        goal.orientation.x = req.pose[3];
+        goal.orientation.y = req.pose[4];
+        goal.orientation.z = req.pose[5];
+        goal.orientation.w = req.pose[6];
+    }
+
+
+    ROS_INFO_STREAM("X: " << goal.position.x << " Y: " << goal.position.y 
+            << " Z: " << goal.position.z << " RX: " << goal.orientation.x
+            << " RY: " << goal.orientation.y << " RZ: " << goal.orientation.z
+            << " RW: " << goal.orientation.w);
+
 
     group.setPoseTarget(goal);
 
@@ -306,11 +338,50 @@ bool execute(ur10_gripper_msgs::UR10::Request  &req,
 }
 
 
+bool tilt(ur10_gripper_msgs::UR10::Request  &req,
+          ur10_gripper_msgs::UR10::Response &res,
+          moveit::planning_interface::MoveGroup &group)
+{
+    if(req.pose.size() < 5)
+    {
+        ROS_ERROR("Invalid Request Parameters:");
+        ROS_ERROR("Provide rotation pivot as X, Y, Z offset from end effector position"); 
+        ROS_ERROR("followed by angular velocity V and final angle F");        
+        return false;
+    }    
+    
+    ROS_INFO("Push Request Recieved");
+
+    // Setup planning parameters
+    group.setPlanningTime(10.0);
+    group.setNumPlanningAttempts(3);
+    group.setMaxVelocityScalingFactor(0.01);
+
+    // Generate final pose
+    geometry_msgs::PoseStamped current_pose = group.getCurrentPose();
+    geometry_msgs::Pose goal = current_pose.pose;
+    //goal.position.x += .1f;
+
+    // Plan and execute
+    group.setPoseTarget(goal);
+
+    moveit::planning_interface::MoveGroup::Plan my_plan;
+    ROS_INFO_STREAM("Planning motion to initial Pose");
+    res.success = group.plan(my_plan);
+
+    if(res.success)
+    {
+        res.success = group.execute(my_plan);
+        ROS_INFO_STREAM("Tilting");
+    }
+
+    return true;
+}
 
 bool action(ur10_gripper_msgs::UR10::Request  &req,
             ur10_gripper_msgs::UR10::Response &res)
 {
-    moveit::planning_interface::MoveGroup group("Arm");
+    moveit::planning_interface::MoveGroup group("manipulator");
     switch(req.request)
     {
         case MOVETO:
@@ -324,6 +395,9 @@ bool action(ur10_gripper_msgs::UR10::Request  &req,
             break;
         case EXECUTE:
             execute(req, res, group);
+            break;
+        case TILT:
+            tilt(req, res, group);
             break;
         default:
             ROS_ERROR("Invalid Request Recieved");
@@ -339,16 +413,16 @@ int main(int argc, char **argv)
 	ros::init(argc, argv, "ur10_server");
   	ros::NodeHandle n;
     
-    moveit::planning_interface::MoveGroup group("Arm");
+    moveit::planning_interface::MoveGroup group("manipulator");
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface;
 
     //Checks if the frame has been loaded to prevent collision
-    if(planning_scene_interface.getKnownObjectNames().size() < 6)
+    /*if(planning_scene_interface.getKnownObjectNames().size() < 6)
     {
         ROS_ERROR("Collision Objects not loaded!");
         ros::shutdown();
         return 1;
-    }
+    }*/
     std::cout << std::endl;
     ROS_INFO("Ready to recieve commands");
 
