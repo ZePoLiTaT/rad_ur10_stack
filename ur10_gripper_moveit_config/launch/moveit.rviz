@@ -5,22 +5,14 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /MotionPlanning1
         - /MotionPlanning1/Scene Geometry1
         - /MotionPlanning1/Planning Request1
         - /MotionPlanning1/Planned Path1
         - /TF1
         - /TF1/Frames1
-        - /TF1/Tree1/world1
-        - /TF1/Tree1/world1/base_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1/wrist_2_link1
-        - /TF1/Tree1/world1/base_link1/shoulder_link1/upper_arm_link1/forearm_link1/wrist_1_link1/wrist_2_link1/wrist_3_link1
-        - /TF1/Tree1/world1/base_link1/base1
       Splitter Ratio: 0.742560029
-    Tree Height: 199
+    Tree Height: 192
   - Class: rviz/Help
     Name: Help
   - Class: rviz/Views
@@ -183,7 +175,7 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
-        Loop Animation: true
+        Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
         Show Robot Collision: false
@@ -344,29 +336,49 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base:
-          Value: true
+          Value: false
         base_link:
-          Value: true
+          Value: false
         ee_link:
-          Value: true
+          Value: false
         forearm_link:
+          Value: false
+        gripperOffset:
+          Value: false
+        robotiq_85_adapter_link:
+          Value: false
+        robotiq_85_base_link:
+          Value: false
+        robotiq_85_left_finger_link:
+          Value: false
+        robotiq_85_left_finger_tip_link:
+          Value: false
+        robotiq_85_left_inner_knuckle_link:
           Value: true
+        robotiq_85_left_knuckle_link:
+          Value: false
+        robotiq_85_right_finger_link:
+          Value: false
+        robotiq_85_right_finger_tip_link:
+          Value: false
+        robotiq_85_right_inner_knuckle_link:
+          Value: true
+        robotiq_85_right_knuckle_link:
+          Value: false
         shoulder_link:
-          Value: true
+          Value: false
         tool0:
-          Value: true
-        tool0_controller:
-          Value: true
+          Value: false
         upper_arm_link:
-          Value: true
+          Value: false
         world:
-          Value: true
+          Value: false
         wrist_1_link:
-          Value: true
+          Value: false
         wrist_2_link:
-          Value: true
+          Value: false
         wrist_3_link:
-          Value: true
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -376,8 +388,7 @@ Visualization Manager:
         world:
           base_link:
             base:
-              tool0_controller:
-                {}
+              {}
             shoulder_link:
               upper_arm_link:
                 forearm_link:
@@ -385,7 +396,22 @@ Visualization Manager:
                     wrist_2_link:
                       wrist_3_link:
                         ee_link:
-                          {}
+                          gripperOffset:
+                            {}
+                          robotiq_85_adapter_link:
+                            robotiq_85_base_link:
+                              robotiq_85_left_inner_knuckle_link:
+                                robotiq_85_left_finger_tip_link:
+                                  {}
+                              robotiq_85_left_knuckle_link:
+                                robotiq_85_left_finger_link:
+                                  {}
+                              robotiq_85_right_inner_knuckle_link:
+                                robotiq_85_right_finger_tip_link:
+                                  {}
+                              robotiq_85_right_knuckle_link:
+                                robotiq_85_right_finger_link:
+                                  {}
                         tool0:
                           {}
       Update Interval: 0
@@ -405,7 +431,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.71522999
+      Distance: 3.42354727
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -420,10 +446,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.270202816
+      Pitch: 0.430202246
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 1.54411995
+      Yaw: 2.35912561
     Saved: ~
 Window Geometry:
   Displays:
@@ -437,7 +463,7 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000002e0000003dafc0200000007fb000000100044006900730070006c006100790073010000002800000108000000dd00fffffffb0000000800480065006c00700000000342000000bb0000007600fffffffb0000000a005600690065007700730100000136000000b5000000b000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000001f30000026b0000000000000000fb0000002e004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d00200053006c00690064006500720000000000ffffffff0000004a00fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001f100000211000001cc00ffffff00000459000003da00000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000002e0000003c1fc0200000007fb000000100044006900730070006c006100790073010000004100000101000000dd00fffffffb0000000800480065006c00700000000342000000bb0000007600fffffffb0000000a005600690065007700730100000148000000b1000000b000fffffffb0000000c00430061006d00650072006100000002ff000001610000000000000000fb0000001e004d006f00740069006f006e00200050006c0061006e006e0069006e006701000001f30000026b0000000000000000fb0000002e004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d00200053006c00690064006500720000000000ffffffff0000004a00fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001ff00000203000001cc00ffffff00000459000003c100000001000000020000000100000002fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1855
