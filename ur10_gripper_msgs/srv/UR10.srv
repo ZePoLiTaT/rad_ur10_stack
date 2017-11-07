@@ -11,6 +11,7 @@ uint8 request
 #IF THERE IS A SPACE BEFORE THE [] THIS WILL BREAK
 float32[] pose
 bool plan
+float32 velocity_scaling
 #Used to pick plan or execute for plan
 #Used to pick tilt or regular for push
 ---

@@ -2,11 +2,12 @@
     UR10 Gripper Server
     This server publishes a set of high level actions that the UR10 can perform
 
-    @author Faiz
-    @version 1.0 20/07/17
+    @author     Faiz
+    @version    1.0 20/07/17
 
-    @modified Tatiana Lopez Guevara 
-    @version 1.1 29/09/17
+    @modified   Tatiana Lopez Guevara 
+    @version    1.1 29/09/17
+    @changes    Added velocity scaling parameter in the request
 */
 
 
@@ -30,7 +31,6 @@
 #define PUSH 1
 #define TIMEDISTANCE 2
 #define EXECUTE 3
-#define TILT 4
 
 std::vector<moveit::planning_interface::MoveGroup::Plan> plans;
 int numPlans = 0;
@@ -80,8 +80,15 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
         ROS_INFO("Planning Only Mode");
     }
 
+    float velocity_scaling_factor_ = 1.0f;
+    if (req.velocity_scaling > 0.0f && req.velocity_scaling < 1.0f)
+    {
+        velocity_scaling_factor_ = req.velocity_scaling;
+        ROS_INFO_STREAM("   velocity_scaling_factor: " << velocity_scaling_factor_);
+    }
+
     group.setPlanningTime(10.0);
-    group.setMaxVelocityScalingFactor(0.03);
+    group.setMaxVelocityScalingFactor(velocity_scaling_factor_);
     //group.setGoalPositionTolerance(0.1);
     geometry_msgs::Pose goal;
 
@@ -338,46 +345,6 @@ bool execute(ur10_gripper_msgs::UR10::Request  &req,
 }
 
 
-bool tilt(ur10_gripper_msgs::UR10::Request  &req,
-          ur10_gripper_msgs::UR10::Response &res,
-          moveit::planning_interface::MoveGroup &group)
-{
-    if(req.pose.size() < 5)
-    {
-        ROS_ERROR("Invalid Request Parameters:");
-        ROS_ERROR("Provide rotation pivot as X, Y, Z offset from end effector position"); 
-        ROS_ERROR("followed by angular velocity V and final angle F");        
-        return false;
-    }    
-    
-    ROS_INFO("Push Request Recieved");
-
-    // Setup planning parameters
-    group.setPlanningTime(10.0);
-    group.setNumPlanningAttempts(3);
-    group.setMaxVelocityScalingFactor(0.01);
-
-    // Generate final pose
-    geometry_msgs::PoseStamped current_pose = group.getCurrentPose();
-    geometry_msgs::Pose goal = current_pose.pose;
-    //goal.position.x += .1f;
-
-    // Plan and execute
-    group.setPoseTarget(goal);
-
-    moveit::planning_interface::MoveGroup::Plan my_plan;
-    ROS_INFO_STREAM("Planning motion to initial Pose");
-    res.success = group.plan(my_plan);
-
-    if(res.success)
-    {
-        res.success = group.execute(my_plan);
-        ROS_INFO_STREAM("Tilting");
-    }
-
-    return true;
-}
-
 bool action(ur10_gripper_msgs::UR10::Request  &req,
             ur10_gripper_msgs::UR10::Response &res)
 {
@@ -395,9 +362,6 @@ bool action(ur10_gripper_msgs::UR10::Request  &req,
             break;
         case EXECUTE:
             execute(req, res, group);
-            break;
-        case TILT:
-            tilt(req, res, group);
             break;
         default:
             ROS_ERROR("Invalid Request Recieved");
