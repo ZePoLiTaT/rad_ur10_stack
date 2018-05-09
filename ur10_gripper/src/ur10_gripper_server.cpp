@@ -67,10 +67,11 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
             ur10_gripper_msgs::UR10::Response &res, 
             moveit::planning_interface::MoveGroup &group)
 {
-    if(req.pose.size() < 6 || req.pose.size() > 7)
+    if(req.pose.size() < 7 || req.pose.size() > 8)
     {
         ROS_ERROR("Invalid Request Parameters:");
-        ROS_ERROR("Provide X, Y, Z, [R, P, Y | Rx, Ry, Rz, Rw] in pose vector");
+        ROS_ERROR("Provide [X, Y, Z, Rx, Ry, Rz, Rw, [OC]] in pose vector");
+        //ROS_ERROR("Provide X, Y, Z, [R, P, Y | Rx, Ry, Rz, Rw] in pose vector");
         return false;
     }
     ROS_INFO("Move Request Recieved");
@@ -96,18 +97,34 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
     goal.position.y = req.pose[1];
     goal.position.z = req.pose[2];
 
-    if(req.pose.size() == 6)
-    {
-        setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
-    }
-    else
-    {
-        goal.orientation.x = req.pose[3];
-        goal.orientation.y = req.pose[4];
-        goal.orientation.z = req.pose[5];
-        goal.orientation.w = req.pose[6];
-    }
+    //if(req.pose.size() == 6)
+    //{
+    //    setRPYGoal(goal, req.pose[3], req.pose[4], req.pose[5]);
+    //}
+    //else
+    //{
+    goal.orientation.x = req.pose[3];
+    goal.orientation.y = req.pose[4];
+    goal.orientation.z = req.pose[5];
+    goal.orientation.w = req.pose[6];
+    //}
 
+    if(req.pose.size() == 8)
+    {
+        moveit_msgs::OrientationConstraint ocm;
+        ocm.link_name = "ee_link";
+        ocm.header.frame_id = "world";
+        ocm.orientation.w = 1.0;
+        ocm.absolute_x_axis_tolerance = 0.1;
+        ocm.absolute_y_axis_tolerance = 0.1;
+        ocm.absolute_z_axis_tolerance = 0.1;
+        ocm.weight = 1.0;
+
+        moveit_msgs::Constraints test_constraints;
+        test_constraints.orientation_constraints.push_back(ocm);
+        group.setPathConstraints(test_constraints);
+        ROS_INFO_STREAM("CONSTRAINING MOTION !!!"<<ocm.link_name<<","<<ocm.header.frame_id);
+    }
 
     ROS_INFO_STREAM("X: " << goal.position.x << " Y: " << goal.position.y 
             << " Z: " << goal.position.z << " RX: " << goal.orientation.x
@@ -133,6 +150,7 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
         }
     }
 
+    group.clearPathConstraints();
     return true;
 }
 

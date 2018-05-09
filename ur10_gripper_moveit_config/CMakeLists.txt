@@ -34,6 +34,11 @@ add_executable(addFrame src/addFrame.cpp)
 target_link_libraries(addFrame ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 install(TARGETS addFrame DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+add_executable(addTray src/addTray.cpp)
+target_link_libraries(addTray ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+install(TARGETS addTray DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   PATTERN "setup_assistant.launch" EXCLUDE)
 install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
