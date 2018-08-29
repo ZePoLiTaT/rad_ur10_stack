@@ -26,6 +26,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 #define MOVETO 0
 #define PUSH 1
@@ -67,6 +68,7 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
             ur10_gripper_msgs::UR10::Response &res, 
             moveit::planning_interface::MoveGroup &group)
 {
+    //auto t1 = std::chrono::high_resolution_clock::now();
     if(req.pose.size() < 7 || req.pose.size() > 8)
     {
         ROS_ERROR("Invalid Request Parameters:");
@@ -136,7 +138,7 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
 
     moveit::planning_interface::MoveGroup::Plan my_plan;
     ROS_INFO_STREAM("Planning motion");
-    res.success = group.plan(my_plan);
+    res.success = group.plan(my_plan) == moveit_msgs::MoveItErrorCodes::SUCCESS;
     
     sleep(1.0);
     //Actually Move if not a planning only request
@@ -145,12 +147,15 @@ bool moveTo(ur10_gripper_msgs::UR10::Request  &req,
         if (req.plan == false)
         {
             ROS_INFO_STREAM("Moving to planned pose");
-            res.success = group.execute(my_plan);
+            res.success = group.execute(my_plan) == moveit_msgs::MoveItErrorCodes::SUCCESS;
             sleep(5.0);
         }
     }
 
     group.clearPathConstraints();
+    //auto t2 = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double> elapsed = t2 - t1;
+    //std::cout << "Elapsed time: " << elapsed.count() << " s\n";
     return true;
 }
 
@@ -200,12 +205,12 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
 
     moveit::planning_interface::MoveGroup::Plan my_plan;
     ROS_INFO_STREAM("Planning motion to initial Pose");
-    res.success = group.plan(my_plan);
+    res.success = group.plan(my_plan) == moveit_msgs::MoveItErrorCodes::SUCCESS;
     res.code = 0;
     sleep(3.0);
     if(res.success)
     {
-        res.success = group.execute(my_plan);
+        res.success = group.execute(my_plan) == moveit_msgs::MoveItErrorCodes::SUCCESS;
         ROS_INFO_STREAM("Moving to initial Pose");
     }
     else
@@ -228,11 +233,11 @@ bool push(ur10_gripper_msgs::UR10::Request  &req,
 
     moveit::planning_interface::MoveGroup::Plan my_plan2;
     ROS_INFO_STREAM("Planning push");
-    res.success = group.plan(my_plan2);
+    res.success = group.plan(my_plan2) == moveit_msgs::MoveItErrorCodes::SUCCESS;
     sleep(3.0);
     if(res.success)
     {
-        res.success = group.execute(my_plan2);
+        res.success = group.execute(my_plan2) == moveit_msgs::MoveItErrorCodes::SUCCESS;
         ROS_INFO_STREAM("Pushing");
     }
     else
@@ -323,7 +328,7 @@ bool timeDistance(ur10_gripper_msgs::UR10::Request  &req,
 
     moveit::planning_interface::MoveGroup::Plan my_plan;
     ROS_INFO_STREAM("Planning motion");
-    res.success = group.plan(my_plan);
+    res.success = group.plan(my_plan) == moveit_msgs::MoveItErrorCodes::SUCCESS;
     if(res.success)
     {
         plans.push_back(my_plan);
@@ -371,6 +376,9 @@ bool action(ur10_gripper_msgs::UR10::Request  &req,
     {
         case MOVETO:
             moveTo(req, res, group);
+            //req.pose[2] = req.pose[2] - 0.02f;
+            //ROS_INFO_STREAM("Executing SECOND Plan ");
+            //moveTo(req, res, group);
             break;
         case PUSH:
             push(req, res, group);
